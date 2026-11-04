@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Идеал Климат</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#172b42;background:#f3f6fa}
+*{box-sizing:border-box}
+body{margin:0}
+header{background:#122b47;color:white;padding:22px}
+header h1{margin:0;font-size:24px}
+header p{margin:7px 0 0;color:#b9cddd}
+main{max-width:1050px;margin:auto;padding:18px}
+.card{background:white;border:1px solid #e1e7ee;border-radius:15px;padding:18px;margin-bottom:16px}
+h2{font-size:18px;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metric{background:#f2f6fb;padding:16px;border-radius:12px}
+.metric small{display:block;color:#64748b;margin-bottom:8px}
+.metric strong{font-size:21px}
+label{display:block;color:#526477;font-size:13px;margin-bottom:5px}
+input,select{width:100%;padding:10px;border:1px solid #ccd6e2;border-radius:8px;background:white;font-size:14px}
+button{border:0;background:#1764ad;color:white;border-radius:8px;padding:11px 15px;cursor:pointer}
+button.secondary{background:#e9f0f7;color:#234361}
+button.danger{background:#fff0f0;color:#b42318;padding:7px 10px}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:16px}
+.tabs button{background:#e4ebf3;color:#344b64;white-space:nowrap}
+.tabs button.active{background:#1764ad;color:white}
+.page{display:none}.page.active{display:block}
+.form{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;border-bottom:1px solid #e7edf3;padding:11px 7px}
+th{color:#64748b;font-size:12px}
+.right{text-align:right}
+.muted{color:#718096;font-size:13px}
+.progress{height:10px;background:#e4ebf3;border-radius:10px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:#18816b}
+@media(max-width:700px){
+.grid,.form{grid-template-columns:1fr 1fr}
+.metric strong{font-size:18px}
+table{font-size:12px}
+}
+@media(max-width:430px){.grid,.form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>Идеал Климат</h1>
+<p>Управление объектами · Прототип</p>
+</header>
+<main>
+<div class="card">
+<div class="form">
+<div><label>Объект</label><input id="name"></div>
+<div><label>Партнёр</label><input id="partner"></div>
+<div><label>Выполнение, %</label><input id="progressInput" type="number" min="0" max="100"></div>
+</div>
+<div class="progress"><div id="bar"></div></div>
+</div>
+
+<div class="grid" id="metrics"></div>
+
+<div class="tabs" style="margin-top:18px">
+<button class="active" onclick="tab('estimate',this)">Смета</button>
+<button onclick="tab('income',this)">Поступления</button>
+<button onclick="tab('expense',this)">Расходы</button>
+<button onclick="tab('commission',this)">Комиссия</button>
+</div>
+
+<section id="estimate" class="page active">
+<div class="card">
+<h2>Смета по разделам</h2>
+<div class="form">
+<div><label>Раздел</label><select id="section">
+<option>Котельная</option><option>Отопление</option>
+<option>ВК</option><option>Электрика</option>
+<option>Вентиляция</option><option>Наружные сети</option>
+<option>Прочее</option>
+</select></div>
+<div><label>Работы заказчику, ₽</label><input id="work" type="number"></div>
+<div><label>Материалы заказчику, ₽</label><input id="material" type="number"></div>
+<div><label>Транспорт и накладные, ₽</label><input id="transport" type="number"></div>
+<div><label>План затрат на работы, ₽</label><input id="planWork" type="number"></div>
+<div><label>План затрат на материалы, ₽</label><input id="planMaterial" type="number"></div>
+<div><label>План прочих затрат, ₽</label><input id="planOther" type="number"></div>
+</div>
+<button onclick="addEstimate()">Добавить раздел</button>
+<div style="overflow:auto;margin-top:15px"><table>
+<thead><tr><th>Раздел</th><th>Работы</th><th>Материалы</th><th>Транспорт</th><th>План затрат</th><th></th></tr></thead>
+<tbody id="estimateRows"></tbody></table></div>
+</div>
+</section>
+
+<section id="income" class="page">
+<div class="card">
+<h2>Поступления от заказчика</h2>
+<div class="form">
+<div><label>Дата</label><input id="incomeDate" type="date"></div>
+<div><label>Сумма, ₽</label><input id="incomeAmount" type="number"></div>
+<div><label>Комментарий</label><input id="incomeNote" placeholder="Аванс, этап работ..."></div>
+</div>
+<button onclick="addOperation('income')">Добавить поступление</button>
+<table><thead><tr><th>Дата</th><th>Комментарий</th><th class="right">Сумма</th><th></th></tr></thead>
+<tbody id="incomeRows"></tbody></table>
+</div>
+</section>
+
+<section id="expense" class="page">
+<div class="card">
+<h2>Расходы по объекту</h2>
+<div class="form">
+<div><label>Дата</label><input id="expenseDate" type="date"></div>
+<div><label>Сумма, ₽</label><input id="expenseAmount" type="number"></div>
+<div><label>Категория</label><select id="expenseCategory">
+<option>Материалы</option><option>Оплата бригады</option>
+<option>Субподряд</option><option>Транспорт</option>
+<option>Накладные</option><option>Комиссия партнёру</option>
+<option>Прочие расходы</option>
+</select></div>
+<div><label>Раздел</label><select id="expenseSection">
+<option>Общие расходы</option><option>Котельная</option>
+<option>Отопление</option><option>ВК</option>
+<option>Электрика</option><option>Вентиляция</option>
+<option>Наружные сети</option><option>Прочее</option>
+</select></div>
+<div><label>Комментарий</label><input id="expenseNote" placeholder="Кому и за что"></div>
+</div>
+<button onclick="addOperation('expense')">Добавить расход</button>
+<div style="overflow:auto"><table>
+<thead><tr><th>Дата</th><th>Категория</th><th>Раздел</th><th>Комментарий</th><th class="right">Сумма</th><th></th></tr></thead>
+<tbody id="expenseRows"></tbody></table></div>
+</div>
+</section>
+
+<section id="commission" class="page">
+<div class="card">
+<h2>Комиссия партнёру</h2>
+<div class="form">
+<div><label>Способ расчёта</label>
+<select id="commissionType">
+<option value="none">Без комиссии</option>
+<option value="works">% от работ</option>
+<option value="materials">% от материалов</option>
+<option value="all">% от всей сметы</option>
+<option value="fixed">Фиксированная сумма</option>
+</select></div>
+<div><label>Процент или сумма в ₽</label><input id="commissionValue" type="number" min="0"></div>
+</div>
+<p>Плановая комиссия: <strong id="commissionTotal"></strong></p>
+<p class="muted">Выплату комиссии фиксируй во вкладке «Расходы».</p>
+</div>
+</section>
+
+<div class="card">
+<h2>Резервная копия</h2>
+<button onclick="exportData()">Сохранить данные в JSON</button>
+<label style="margin-top:15px">Восстановить из файла</label>
+<input type="file" accept=".json" onchange="importData(event)">
+<p class="muted">Данные сохраняются только в этом браузере. Очистка браузера может их удалить. Делай резервные копии.</p>
+</div>
+</main>
+<script>
+const KEY='ideal-klimat-v1';
+const initial={
+name:'Демонстрационный объект',
+partner:'Партнёр',
+progress:45,
+estimate:[
+{section:'Котельная',work:300000,material:400000,transport:20000,planWork:150000,planMaterial:340000,planOther:10000},
+{section:'Отопление',work:450000,material:350000,transport:15000,planWork:230000,planMaterial:300000,planOther:10000}
+],
+income:[{date:'2026-11-01',amount:500000,note:'Аванс'}],
+expense:[
+{date:'2026-11-02',amount:120000,category:'Материалы',section:'Котельная',note:'Закупка'},
+{date:'2026-11-03',amount:100000,category:'Оплата бригады',section:'Отопление',note:'Аванс бригаде'}
+],
+commissionType:'none',commissionValue:0
+};
+let data;
+try{data=JSON.parse(localStorage.getItem(KEY))||initial}
+catch(e){data=initial}
+const el=id=>document.getElementById(id);
+const num=id=>Number(el(id).value)||0;
+const money=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const sum=(items,fn)=>items.reduce((a,x)=>a+fn(x),0);
+const revenue=x=>x.work+x.material+x.transport;
+const planned=x=>x.planWork+x.planMaterial+x.planOther;
+function commission(){
+let v=Number(data.commissionValue)||0;
+let e=data.estimate;
+let base={
+none:0,
+works:sum(e,x=>x.work),
+materials:sum(e,x=>x.material),
+all:sum(e,revenue)
+};
+return data.commissionType==='fixed'?v:(base[data.commissionType]||0)*v/100;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function tab(id,button){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+el(id).classList.add('active');button.classList.add('active');
+}
+function addEstimate(){
+let x={
+section:el('section').value,
+work:num('work'),material:num('material'),
+transport:num('transport'),planWork:num('planWork'),
+planMaterial:num('planMaterial'),planOther:num('planOther')
+};
+if(!revenue(x)&&!planned(x))return alert('Укажи суммы');
+data.estimate.push(x);save();
+['work','material','transport','planWork','planMaterial','planOther'].forEach(id=>el(id).value='');
+}
+function addOperation(type){
+let amount=num(type+'Amount');
+if(amount<=0)return alert('Укажи сумму больше нуля');
+let x={
+date:el(type+'Date').value,
+amount,
+note:el(type+'Note').value
+};
+if(!x.date)return alert('Укажи дату');
+if(type==='expense'){
+x.category=el('expenseCategory').value;
+x.section=el('expenseSection').value;
+}
+data[type].push(x);save();
+el(type+'Amount').value='';el(type+'Note').value='';
+}
+function removeItem(type,index){
+if(!confirm('Удалить запись?'))return;
+data[type].splice(index,1);save();
+}
+function render(){
+let total=sum(data.estimate,revenue);
+let plan=sum(data.estimate,planned);
+let incoming=sum(data.income,x=>x.amount);
+let outgoing=sum(data.expense,x=>x.amount);
+let fee=commission();
+let paidFee=sum(data.expense,x=>x.category==='Комиссия партнёру'?x.amount:0);
+let plannedProfit=total-plan-fee;
+let metrics=[
+['Сумма сметы',money(total)],
+['Поступило',money(incoming)],
+['Потрачено',money(outgoing)],
+['Остаток в кассе',money(incoming-outgoing)],
+['Плановая прибыль',money(plannedProfit)],
+['Остаток комиссии',money(Math.max(0,fee-paidFee))]
+];
+el('metrics').innerHTML=metrics.map(x=>'<div class="metric"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>').join('');
+el('name').value=data.name;
+el('partner').value=data.partner;
+el('progressInput').value=data.progress;
+el('bar').style.width=data.progress+'%';
+el('commissionType').value=data.commissionType;
+el('commissionValue').value=data.commissionValue;
+el('commissionTotal').textContent=money(fee);
+el('estimateRows').innerHTML=data.estimate.map((x,i)=>
+'<tr><td>'+escapeHtml(x.section)+'</td><td>'+money(x.work)+'</td><td>'+money(x.material)+'</td><td>'+money(x.transport)+'</td><td>'+money(planned(x))+'</td><td><button class="danger" onclick="removeItem(\'estimate\','+i+')">×</button></td></tr>'
+).join('');
+el('incomeRows').innerHTML=data.income.map((x,i)=>
+'<tr><td>'+escapeHtml(x.date)+'</td><td>'+escapeHtml(x.note)+'</td><td class="right">'+money(x.amount)+'</td><td><button class="danger" onclick="removeItem(\'income\','+i+')">×</button></td></tr>'
+).join('');
+el('expenseRows').innerHTML=data.expense.map((x,i)=>
+'<tr><td>'+escapeHtml(x.date)+'</td><td>'+escapeHtml(x.category)+'</td><td>'+escapeHtml(x.section)+'</td><td>'+escapeHtml(x.note)+'</td><td class="right">'+money(x.amount)+'</td><td><button class="danger" onclick="removeItem(\'expense\','+i+')">×</button></td></tr>'
+).join('');
+}
+function escapeHtml(s){
+return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+el('name').onchange=e=>{data.name=e.target.value;save()};
+el('partner').onchange=e=>{data.partner=e.target.value;save()};
+el('progressInput').onchange=e=>{
+data.progress=Math.max(0,Math.min(100,Number(e.target.value)||0));save()
+};
+el('commissionType').onchange=e=>{data.commissionType=e.target.value;save()};
+el('commissionValue').onchange=e=>{data.commissionValue=Number(e.target.value)||0;save()};
+function exportData(){
+let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+let a=document.createElement('a');
+a.href=URL.createObjectURL(blob);
+a.download='ideal-klimat-backup.json';a.click();
+URL.revokeObjectURL(a.href);
+}
+function importData(event){
+let file=event.target.files[0];if(!file)return;
+let reader=new FileReader();
+reader.onload=()=>{
+try{
+let d=JSON.parse(reader.result);
+if(!Array.isArray(d.estimate)||!Array.isArray(d.income)||!Array.isArray(d.expense))throw Error();
+if(confirm('Заменить текущие данные резервной копией?')){data=d;save()}
+}catch(e){alert('Некорректный файл')}
+};
+reader.readAsText(file);
+}
+let today=new Date().toISOString().slice(0,10);
+el('incomeDate').value=today;
+el('expenseDate').value=today;
+render();
+</script>
+</body>
+</html>

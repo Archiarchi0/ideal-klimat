@@ -1,420 +1,805 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Идеал Климат</title>
+<meta name="theme-color" content="#0d2534">
+<title>Идеал Климат — Объекты</title>
 <style>
-:root{font-family:Arial,sans-serif;color:#172b42;background:#f3f6fa}
+:root{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;color:#172c3a;background:#f3f6f8;font-size:15px}
 *{box-sizing:border-box}
 body{margin:0}
-header{background:#122b47;color:white;padding:22px}
-header h1{margin:0;font-size:24px}
-header p{margin:7px 0 0;color:#b9cddd}
-main{max-width:1100px;margin:auto;padding:18px}
-.card{background:white;border:1px solid #e1e7ee;border-radius:15px;padding:18px;margin-bottom:16px}
-h2{font-size:18px;margin:0 0 16px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.metric{background:#f2f6fb;padding:16px;border-radius:12px}
-.metric small{display:block;color:#64748b;margin-bottom:8px}
-.metric strong{font-size:21px}
-label{display:block;color:#526477;font-size:13px;margin-bottom:5px}
-input,select{width:100%;padding:10px;border:1px solid #ccd6e2;border-radius:8px;background:white;font-size:14px}
-button{border:0;background:#1764ad;color:white;border-radius:8px;padding:11px 15px;cursor:pointer}
-button.danger{background:#fff0f0;color:#b42318;padding:7px 10px}
-.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:16px}
-.tabs button{background:#e4ebf3;color:#344b64;white-space:nowrap}
-.tabs button.active{background:#1764ad;color:white}
-.page{display:none}
-.page.active{display:block}
-.form{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
-.table-wrap{overflow-x:auto;margin-top:15px}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;border-bottom:1px solid #e7edf3;padding:11px 7px;white-space:nowrap}
-th{color:#64748b;font-size:12px}
-.right{text-align:right}
-tfoot td{background:#eaf2fa;font-weight:bold;border-top:2px solid #b8cce0}
-tfoot td:first-child{border-radius:6px 0 0 6px}
-.muted{color:#718096;font-size:13px}
-.progress{height:10px;background:#e4ebf3;border-radius:10px;overflow:hidden;margin:12px 0}
-.progress div{height:100%;background:#18816b}
-@media(max-width:700px){
-.grid,.form{grid-template-columns:1fr 1fr}
-.metric strong{font-size:18px}
-table{font-size:12px}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.top{background:#102e3c;color:white;padding:22px max(18px,calc((100vw - 1160px)/2));display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.6px}
+.sub{font-size:12px;color:#a9c5d0;margin-top:3px}
+.shell{max-width:1160px;margin:24px auto;padding:0 18px 50px}
+.panel{background:white;border:1px solid #e2e9ed;border-radius:18px;padding:20px;box-shadow:0 3px 14px #0d2b3910;margin-bottom:18px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.muted{color:#71818b}
+.small{font-size:12px}
+.title{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:0 0 6px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:650;background:#126d75;color:white}
+.btn:hover{filter:brightness(.96)}
+.btn.secondary{background:#e9f0f3;color:#234653}
+.btn.danger{background:#ffeaeb;color:#a52d39}
+.btn.ghost{background:transparent;color:#49707e;border:1px solid #d6e2e7}
+.btn.sm{padding:7px 10px;font-size:12px}
+.tabs,.filters{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}
+.tab{border:0;border-radius:10px;background:#e8eef1;color:#3c5965;padding:10px 14px;font-weight:650}
+.tab.active{background:#126d75;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px}
+.object{background:white;border:1px solid #dce7eb;border-radius:15px;padding:17px;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.object:hover{transform:translateY(-2px);box-shadow:0 8px 22px #12374717}
+.object h3{margin:0 0 5px;font-size:18px}
+.progress{height:8px;border-radius:10px;background:#e6eff1;overflow:hidden;margin:12px 0}
+.progress>div{height:100%;background:#15847e}
+.status{display:inline-block;background:#e8f6f0;color:#13744e;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:700}
+.status.done{background:#edf0f4;color:#607280}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px;margin:16px 0}
+.kpi{background:#f3f7f8;border-radius:12px;padding:13px}
+.kpi strong{font-size:19px;display:block;margin-top:5px;word-break:break-word}
+.kpi span{color:#71818b;font-size:12px}
+.kpi.emph{background:#e9f7f4}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;color:#526d79;font-weight:650}
+.field input,.field select{width:100%;border:1px solid #cfdee4;border-radius:9px;padding:10px;background:white;color:#203b48;min-height:42px}
+.field input:focus,.field select:focus{outline:2px solid #b3dedb;border-color:#268c8a}
+.wide{grid-column:1/-1}
+.tablewrap{overflow:auto;width:100%}
+table{border-collapse:collapse;width:100%;min-width:650px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #e6edef;white-space:nowrap}
+th{font-size:12px;color:#607984;background:#f4f7f8}
+td{font-size:13px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:800;background:#eaf4f3}
+.actions{display:flex;gap:6px}
+.notice{background:#fff8e8;border:1px solid #f1e0b4;padding:11px 13px;border-radius:10px;font-size:13px;color:#785c22}
+.hidden{display:none!important}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+h2{font-size:19px;margin:0}
+h3{font-size:16px;margin:12px 0}
+.foot{color:#7b8e97;font-size:12px;margin-top:22px}
+.line{border:0;border-top:1px solid #e6edef;margin:18px 0}
+.empty{padding:30px;text-align:center;color:#81929b}
+.top .btn{background:#d4eeeb;color:#124c50}
+@media(max-width:650px){
+.top{padding:17px}
+.brand{font-size:19px}
+.shell{margin:14px auto;padding:0 11px 30px}
+.panel{padding:15px;border-radius:14px}
+.title{font-size:21px}
+.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpi strong{font-size:16px}
+.formgrid{grid-template-columns:1fr 1fr}
+.field.wide{grid-column:1/-1}
+.tabs{overflow:auto;flex-wrap:nowrap}
+.tab{white-space:nowrap}
+.btn{padding:9px 11px}
+.object{padding:14px}
 }
-@media(max-width:430px){
-.grid,.form{grid-template-columns:1fr}
+@media(max-width:390px){
+.formgrid{grid-template-columns:1fr}
+.kpis{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
-<header>
-<h1>Идеал Климат</h1>
-<p>Управление объектами · Прототип v1.1</p>
+<header class="top">
+  <div>
+    <div class="brand">Идеал Климат</div>
+    <div class="sub">Управление объектами · версия 2.0</div>
+  </div>
+  <button class="btn" onclick="showBackups()">Резервная копия</button>
 </header>
-<main>
-
-<div class="card">
-<div class="form">
-<div><label>Объект</label><input id="name"></div>
-<div><label>Партнёр</label><input id="partner"></div>
-<div><label>Выполнение, %</label><input id="progressInput" type="number" min="0" max="100"></div>
-</div>
-<div class="progress"><div id="bar"></div></div>
-</div>
-
-<div class="grid" id="metrics"></div>
-
-<div class="tabs" style="margin-top:18px">
-<button class="active" onclick="tab('estimate',this)">Смета</button>
-<button onclick="tab('income',this)">Поступления</button>
-<button onclick="tab('expense',this)">Расходы</button>
-<button onclick="tab('commission',this)">Комиссия</button>
-</div>
-
-<section id="estimate" class="page active">
-<div class="card">
-<h2>Смета по разделам</h2>
-<div class="form">
-<div><label>Раздел</label><select id="section">
-<option>Котельная</option><option>Отопление</option>
-<option>ВК</option><option>Электрика</option>
-<option>Вентиляция</option><option>Наружные сети</option>
-<option>Прочее</option>
-</select></div>
-<div><label>Работы заказчику, ₽</label><input id="work" type="number"></div>
-<div><label>Материалы заказчику, ₽</label><input id="material" type="number"></div>
-<div><label>Транспорт и накладные, ₽</label><input id="transport" type="number"></div>
-<div><label>План затрат на работы, ₽</label><input id="planWork" type="number"></div>
-<div><label>План затрат на материалы, ₽</label><input id="planMaterial" type="number"></div>
-<div><label>План прочих затрат, ₽</label><input id="planOther" type="number"></div>
-</div>
-<button onclick="addEstimate()">Добавить раздел</button>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Раздел</th>
-<th class="right">Работы</th>
-<th class="right">Материалы</th>
-<th class="right">Транспорт</th>
-<th class="right">Всего по разделу</th>
-<th class="right">План затрат</th>
-<th></th>
-</tr>
-</thead>
-<tbody id="estimateRows"></tbody>
-<tfoot id="estimateTotals"></tfoot>
-</table>
-</div>
-</div>
-</section>
-
-<section id="income" class="page">
-<div class="card">
-<h2>Поступления от заказчика</h2>
-<div class="form">
-<div><label>Дата</label><input id="incomeDate" type="date"></div>
-<div><label>Сумма, ₽</label><input id="incomeAmount" type="number"></div>
-<div><label>Комментарий</label><input id="incomeNote" placeholder="Аванс, этап работ..."></div>
-</div>
-<button onclick="addOperation('income')">Добавить поступление</button>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Дата</th><th>Комментарий</th><th class="right">Сумма</th><th></th></tr></thead>
-<tbody id="incomeRows"></tbody>
-</table>
-</div>
-</div>
-</section>
-
-<section id="expense" class="page">
-<div class="card">
-<h2>Расходы по объекту</h2>
-<div class="form">
-<div><label>Дата</label><input id="expenseDate" type="date"></div>
-<div><label>Сумма, ₽</label><input id="expenseAmount" type="number"></div>
-<div><label>Категория</label><select id="expenseCategory">
-<option>Материалы</option><option>Оплата бригады</option>
-<option>Субподряд</option><option>Транспорт</option>
-<option>Накладные</option><option>Комиссия партнёру</option>
-<option>Прочие расходы</option>
-</select></div>
-<div><label>Раздел</label><select id="expenseSection">
-<option>Общие расходы</option><option>Котельная</option>
-<option>Отопление</option><option>ВК</option>
-<option>Электрика</option><option>Вентиляция</option>
-<option>Наружные сети</option><option>Прочее</option>
-</select></div>
-<div><label>Комментарий</label><input id="expenseNote" placeholder="Кому и за что"></div>
-</div>
-<button onclick="addOperation('expense')">Добавить расход</button>
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th>Дата</th><th>Категория</th><th>Раздел</th><th>Комментарий</th><th class="right">Сумма</th><th></th></tr>
-</thead>
-<tbody id="expenseRows"></tbody>
-</table>
-</div>
-</div>
-</section>
-
-<section id="commission" class="page">
-<div class="card">
-<h2>Комиссия партнёру</h2>
-<div class="form">
-<div>
-<label>Способ расчёта</label>
-<select id="commissionType">
-<option value="none">Без комиссии</option>
-<option value="works">% от работ</option>
-<option value="materials">% от материалов</option>
-<option value="all">% от всей сметы</option>
-<option value="fixed">Фиксированная сумма</option>
-</select>
-</div>
-<div>
-<label>Процент или сумма в ₽</label>
-<input id="commissionValue" type="number" min="0">
-</div>
-</div>
-<p>Плановая комиссия: <strong id="commissionTotal"></strong></p>
-<p class="muted">Выплату комиссии фиксируй во вкладке «Расходы». Она уже включена в общую сумму расходов.</p>
-</div>
-</section>
-
-<div class="card">
-<h2>Резервная копия</h2>
-<button onclick="exportData()">Сохранить данные в JSON</button>
-<label style="margin-top:15px">Восстановить из файла</label>
-<input type="file" accept=".json" onchange="importData(event)">
-<p class="muted">Данные сохраняются только в этом браузере. Регулярно делай резервные копии.</p>
-</div>
-
+<main class="shell">
+  <div id="app"></div>
+  <div class="foot">Данные хранятся только в этом браузере. Регулярно сохраняйте резервную копию.</div>
 </main>
 <script>
-const KEY='ideal-klimat-v1';
 
-const initial={
-name:'Демонстрационный объект',
-partner:'Партнёр',
-progress:45,
-estimate:[
-{section:'Котельная',work:300000,material:400000,transport:20000,planWork:150000,planMaterial:340000,planOther:10000},
-{section:'Отопление',work:450000,material:350000,transport:15000,planWork:230000,planMaterial:300000,planOther:10000}
-],
-income:[{date:'2026-11-01',amount:500000,note:'Аванс'}],
-expense:[
-{date:'2026-11-02',amount:120000,category:'Материалы',section:'Котельная',note:'Закупка'},
-{date:'2026-11-03',amount:100000,category:'Оплата бригады',section:'Отопление',note:'Аванс бригаде'}
-],
-commissionType:'none',
-commissionValue:0
-};
+'use strict';
 
-let data;
-try{
-data=JSON.parse(localStorage.getItem(KEY))||initial;
-}catch(e){data=initial;}
+const KEY='ideal-klimat-v2',OLD='ideal-klimat-v1';
+const sections=['Котельная','Отопление','ВК','Электрика','Вентиляция','Наружные сети','Прочее'];
+const categories=['Материалы','Оплата бригады','Субподряд','Транспорт','Накладные расходы','Комиссия партнёру','Прочее'];
 
-const el=id=>document.getElementById(id);
-const num=id=>Number(el(id).value)||0;
-const money=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
-const sum=(items,fn)=>items.reduce((a,x)=>a+fn(x),0);
-const revenue=x=>Number(x.work||0)+Number(x.material||0)+Number(x.transport||0);
-const planned=x=>Number(x.planWork||0)+Number(x.planMaterial||0)+Number(x.planOther||0);
+const $=id=>document.getElementById(id);
+const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(Number(n)||0).toLocaleString('ru-RU')+' ₽';
+const money=n=>Math.round(Number(n)||0).toLocaleString('ru-RU');
+const n=x=>Number(x)||0;
+const sum=(arr,fn)=>arr.reduce((a,x)=>a+fn(x),0);
+const id=()=>globalThis.crypto?.randomUUID?.()||'id_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+const iso=()=>{let d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const opt=(values,selected)=>values.map(v=>`<option value="${safe(v)}" ${v===selected?'selected':''}>${safe(v)}</option>`).join('');
+const get=field=>$(field)?.value??'';
+const value=field=>n(get(field));
 
-function escapeHtml(s){
-return String(s??'').replace(/[&<>"']/g,c=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[c]));
+function blankObject(){
+ return {id:id(),name:'',partner:'',area:0,start:'',end:'',progress:0,status:'active',estimate:[],extras:[],income:[],expense:[],commissionType:'none',commissionValue:0,planOverhead:0};
+}
+function normalize(o){
+ let x={...blankObject(),...o};
+ x.id=x.id||id();
+ for(let key of ['estimate','extras','income','expense']){
+  x[key]=(Array.isArray(x[key])?x[key]:[]).map(row=>({...row,id:row.id||id()}));
+ }
+ x.status=x.status==='done'?'done':'active';
+ return x;
+}
+function initialState(){return {version:2,objects:[]}}
+function load(){
+ try{
+  let v=JSON.parse(localStorage.getItem(KEY));
+  if(v&&Array.isArray(v.objects))return {version:2,objects:v.objects.map(normalize)};
+ }catch(e){}
+ try{
+  let old=JSON.parse(localStorage.getItem(OLD));
+  if(old&&typeof old==='object'&&!Array.isArray(old)){
+   let o=normalize({...old,id:id(),area:0,start:'',end:'',status:'active',extras:[],planOverhead:0});
+   return {version:2,objects:[o]};
+  }
+ }catch(e){}
+ return initialState();
+}
+let state=load(),selected=null,view='home',filter='active',tab='estimate',edit={type:null,id:null};
+
+function persist(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(state));
+  return true;
+ }catch(e){
+  alert('Не удалось сохранить данные в браузере. Экспортируйте резервную копию.');
+  return false;
+ }
+}
+persist();
+
+function object(){return state.objects.find(x=>x.id===selected)}
+function lineRevenue(x){return n(x.work)+n(x.material)+n(x.transport)}
+function linePlan(x){return n(x.planWork)+n(x.planMaterial)}
+function commission(o){
+ let all=[...o.estimate,...o.extras],v=n(o.commissionValue);
+ if(o.commissionType==='fixed')return v;
+ let base=o.commissionType==='works'?sum(all,x=>n(x.work)):
+ o.commissionType==='materials'?sum(all,x=>n(x.material)):
+ o.commissionType==='all'?sum(all,lineRevenue):0;
+ return base*v/100;
+}
+function calc(o){
+ let lines=[...o.estimate,...o.extras];
+ let estimate=sum(o.estimate,lineRevenue);
+ let extras=sum(o.extras,lineRevenue);
+ let total=estimate+extras;
+ let income=sum(o.income,x=>n(x.amount));
+ let expense=sum(o.expense,x=>n(x.amount));
+ let plan=sum(lines,linePlan)+n(o.planOverhead);
+ let fee=commission(o);
+ let feePaid=sum(o.expense,x=>x.category==='Комиссия партнёру'?n(x.amount):0);
+ return {
+  estimate,extras,total,income,expense,plan,fee,feePaid,
+  remaining:total-income,cash:income-expense,
+  plannedProfit:total-plan-fee,
+  actualProfit:total-expense,
+  perSq:n(o.area)>0?total/n(o.area):null,
+  workSq:n(o.area)>0?sum(lines,x=>n(x.work))/n(o.area):null
+ };
+}
+function nav(next){view=next;edit={type:null,id:null};render()}
+function choose(oid){selected=oid;tab='estimate';nav('detail')}
+function setFilter(f){filter=f;render()}
+function setTab(t){tab=t;edit={type:null,id:null};render()}
+function kpi(label,v,highlight=false){
+ return `<div class="kpi ${highlight?'emph':''}"><span>${label}</span><strong>${v}</strong></div>`;
+}
+function renderHome(){
+ let items=state.objects.filter(o=>filter==='all'||o.status===filter);
+ return `
+ <div class="section-head">
+  <div><h1 class="title">Мои объекты</h1>
+   <div class="muted small">${state.objects.length} всего · ${state.objects.filter(o=>o.status==='active').length} в работе</div>
+  </div>
+  <button class="btn" onclick="newObject()">+ Новый объект</button>
+ </div>
+ <div class="filters">
+ ${[['active','В работе'],['done','Завершённые'],['all','Все']].map(([v,l])=>`<button class="tab ${filter===v?'active':''}" onclick="setFilter('${v}')">${l}</button>`).join('')}
+ </div>
+ <div class="grid">
+ ${items.map(o=>{
+  let c=calc(o),p=Math.max(0,Math.min(100,n(o.progress)));
+  return `<article class="object" tabindex="0" role="button" onclick="choose('${o.id}')" onkeydown="if(event.key==='Enter')choose('${o.id}')">
+   <div class="row between"><h3>${safe(o.name||'Без названия')}</h3>
+   <span class="status ${o.status==='done'?'done':''}">${o.status==='done'?'Завершён':'В работе'}</span></div>
+   <div class="muted small">${safe(o.partner||'Партнёр не указан')}${n(o.area)>0?' · '+money(o.area)+' м²':''}</div>
+   <div class="progress"><div style="width:${p}%"></div></div>
+   <div class="row between small"><span class="muted">Выполнено ${p}%</span><b>${fmt(c.total)}</b></div>
+  </article>`;
+ }).join('')}
+ </div>
+ ${items.length?'':'<div class="panel empty">Здесь пока нет объектов. Создайте новый или переключите фильтр.</div>'}`;
+}
+function newObject(){selected=null;view='create';render()}
+function objectFields(o,prefix='obj'){
+ return `<div class="formgrid">
+ <div class="field"><label>Название объекта *</label><input id="${prefix}Name" value="${safe(o.name)}" placeholder="Например, Дом 350 м²"></div>
+ <div class="field"><label>Партнёр</label><input id="${prefix}Partner" value="${safe(o.partner)}"></div>
+ <div class="field"><label>Площадь, м²</label><input id="${prefix}Area" type="number" min="0" step="0.01" value="${n(o.area)||''}"></div>
+ <div class="field"><label>Дата начала (необязательно)</label><input id="${prefix}Start" type="date" value="${safe(o.start)}"></div>
+ <div class="field"><label>Дата завершения (необязательно)</label><input id="${prefix}End" type="date" value="${safe(o.end)}"></div>
+ <div class="field"><label>Готовность, %</label><input id="${prefix}Progress" type="number" min="0" max="100" value="${n(o.progress)}"></div>
+ <div class="field"><label>Статус</label><select id="${prefix}Status">
+ <option value="active" ${o.status==='active'?'selected':''}>В работе</option>
+ <option value="done" ${o.status==='done'?'selected':''}>Завершён</option>
+ </select></div></div>`;
+}
+function collectObject(prefix,existing){
+ let o={...existing,name:get(prefix+'Name').trim(),partner:get(prefix+'Partner').trim(),
+ area:value(prefix+'Area'),start:get(prefix+'Start'),end:get(prefix+'End'),
+ progress:Math.max(0,Math.min(100,value(prefix+'Progress'))),status:get(prefix+'Status')};
+ if(!o.name){alert('Введите название объекта');return null}
+ if(o.area<0){alert('Площадь не может быть отрицательной');return null}
+ if(o.start&&o.end&&o.end<o.start){alert('Дата завершения раньше даты начала');return null}
+ return o;
+}
+function createObject(){
+ let o=collectObject('obj',blankObject());
+ if(!o)return;
+ state.objects.push(o);
+ if(persist())choose(o.id);
+}
+function saveSettings(){
+ let o=object(),updated=collectObject('obj',o);
+ if(!updated)return;
+ Object.assign(o,updated);
+ o.planOverhead=value('planOverhead');
+ o.commissionType=get('commissionType');
+ o.commissionValue=value('commissionValue');
+ if(persist()){alert('Настройки сохранены');render()}
+}
+function renderCreate(){
+ return `<div class="row between"><h1 class="title">Новый объект</h1><button class="btn secondary" onclick="nav('home')">← Назад</button></div>
+ <section class="panel">${objectFields(blankObject())}
+ <div class="row" style="margin-top:16px"><button class="btn" onclick="createObject()">Создать объект</button></div></section>`;
+}
+function days(o){
+ if(!o.start||!o.end)return '—';
+ return Math.round((Date.parse(o.end+'T12:00:00')-Date.parse(o.start+'T12:00:00'))/86400000)+1+' дн.';
+}
+function renderDetail(){
+ let o=object();
+ if(!o){nav('home');return ''}
+ let c=calc(o);
+ return `<div class="row between">
+ <div><button class="btn ghost sm" onclick="nav('home')">← Все объекты</button>
+ <h1 class="title" style="margin-top:12px">${safe(o.name)}</h1>
+ <div class="muted small">${safe(o.partner||'Партнёр не указан')} · ${n(o.area)>0?money(o.area)+' м² · ':''}${o.status==='done'?'Завершён':'В работе'} · ${n(o.progress)}%</div></div>
+ <span class="status ${o.status==='done'?'done':''}">${o.status==='done'?'Завершён':'В работе'}</span></div>
+ <div class="progress"><div style="width:${Math.max(0,Math.min(100,n(o.progress)))}%"></div></div>
+ <div class="kpis">
+ ${kpi('Основная смета',fmt(c.estimate))}
+ ${kpi('Допы',fmt(c.extras))}
+ ${kpi('Стоимость объекта',fmt(c.total),true)}
+ ${kpi('Поступило',fmt(c.income))}
+ ${kpi('Потрачено',fmt(c.expense))}
+ ${kpi('Осталось получить',fmt(c.remaining))}
+ ${kpi('Остаток денег',fmt(c.cash),true)}
+ ${kpi(o.status==='done'?'Фактическая прибыль':'Плановая прибыль',fmt(o.status==='done'?c.actualProfit:c.plannedProfit),true)}
+ ${kpi('Полная стоимость / м²',c.perSq===null?'—':fmt(c.perSq))}
+ ${kpi('Монтажные работы / м²',c.workSq===null?'—':fmt(c.workSq))}
+ </div>
+ ${o.status==='done'&&Math.abs(c.remaining)>0.01?'<div class="notice" style="margin-bottom:14px">Внимание: по завершённому объекту расчёты с заказчиком ещё не сходятся.</div>':''}
+ <div class="tabs">
+ ${[['estimate','Смета'],['extras','Допы'],['income','Поступления'],['expense','Расходы'],['settings','Настройки']].map(([v,l])=>`<button class="tab ${tab===v?'active':''}" onclick="setTab('${v}')">${l}</button>`).join('')}
+ </div>
+ <section class="panel">
+ ${tab==='estimate'?renderEstimate(o):tab==='extras'?renderExtras(o):tab==='income'?renderOperations(o,'income'):tab==='expense'?renderOperations(o,'expense'):renderSettings(o,c)}
+ </section>`;
+}
+function editRow(type,rowid){
+ edit={type,id:rowid};
+ render();
+ setTimeout(()=>document.getElementById('entryForm')?.scrollIntoView({behavior:'smooth',block:'start'}),0);
+}
+function cancelEdit(){edit={type:null,id:null};render()}
+function removeRow(type,rowid){
+ if(!confirm('Удалить запись?'))return;
+ let o=object();
+ o[type]=o[type].filter(x=>x.id!==rowid);
+ persist();
+ cancelEdit();
+}
+function buttons(type,rowid){
+ return `<div class="actions">
+ <button class="btn secondary sm" onclick="editRow('${type}','${rowid}')">Изменить</button>
+ <button class="btn danger sm" onclick="removeRow('${type}','${rowid}')">×</button>
+ </div>`;
+}
+function field(label,id,value='',type='text'){
+ return `<div class="field">
+ <label for="${id}">${label}</label>
+ <input id="${id}" type="${type}" value="${safe(value)}" ${type==='number'?'min="0" step="0.01"':''}>
+ </div>`;
 }
 
-function commission(){
-let v=Number(data.commissionValue)||0;
-let e=data.estimate;
-let base={
-none:0,
-works:sum(e,x=>Number(x.work||0)),
-materials:sum(e,x=>Number(x.material||0)),
-all:sum(e,revenue)
-};
-return data.commissionType==='fixed'
-?v:(base[data.commissionType]||0)*v/100;
+function selectField(label,id,values,selected){
+ return `<div class="field">
+ <label for="${id}">${label}</label>
+ <select id="${id}">${opt(values,selected)}</select>
+ </div>`;
 }
 
-function save(){
-localStorage.setItem(KEY,JSON.stringify(data));
-render();
+function currentRow(o,type){
+ return edit.type===type
+  ?o[type].find(x=>x.id===edit.id)||{}
+  :{};
 }
 
-function tab(id,button){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
-el(id).classList.add('active');
-button.classList.add('active');
+function renderEstimate(o){
+ let x=currentRow(o,'estimate');
+ let c=calc(o);
+ let rows=o.estimate.map(r=>`
+ <tr>
+ <td>${safe(r.section)}</td>
+ <td class="num">${fmt(r.work)}</td>
+ <td class="num">${fmt(r.material)}</td>
+ <td class="num">${fmt(r.transport)}</td>
+ <td class="num"><b>${fmt(lineRevenue(r))}</b></td>
+ <td>${buttons('estimate',r.id)}</td>
+ </tr>`).join('');
+
+ return `
+ <div class="section-head">
+ <h2>Основная смета</h2>
+ <b>${fmt(c.estimate)}</b>
+ </div>
+ <div class="tablewrap">
+ <table>
+ <thead><tr>
+ <th>Раздел</th>
+ <th class="num">Работы</th>
+ <th class="num">Материалы</th>
+ <th class="num">Транспорт и накладные</th>
+ <th class="num">Всего</th>
+ <th>Действия</th>
+ </tr></thead>
+ <tbody>${rows||'<tr><td colspan="6" class="empty">Разделы пока не добавлены</td></tr>'}</tbody>
+ <tfoot><tr>
+ <td>ИТОГО</td>
+ <td class="num">${fmt(sum(o.estimate,r=>n(r.work)))}</td>
+ <td class="num">${fmt(sum(o.estimate,r=>n(r.material)))}</td>
+ <td class="num">${fmt(sum(o.estimate,r=>n(r.transport)))}</td>
+ <td class="num">${fmt(c.estimate)}</td>
+ <td></td>
+ </tr></tfoot>
+ </table></div>
+
+ <hr class="line">
+ <h3 id="entryForm">${edit.type==='estimate'?'Редактирование раздела':'Добавить раздел'}</h3>
+ <div class="formgrid">
+ ${selectField('Инженерный раздел','eSection',sections,x.section||sections[0])}
+ ${field('Работы для заказчика, ₽','eWork',x.work||'','number')}
+ ${field('Материалы для заказчика, ₽','eMaterial',x.material||'','number')}
+ ${field('Транспорт и накладные для заказчика, ₽','eTransport',x.transport||'','number')}
+ ${field('Плановые затраты на работы, ₽','ePlanWork',x.planWork||'','number')}
+ ${field('Плановые затраты на материалы, ₽','ePlanMaterial',x.planMaterial||'','number')}
+ </div>
+ <div class="row" style="margin-top:16px">
+ <button class="btn" onclick="saveEstimate()">${edit.type==='estimate'?'Сохранить изменения':'Добавить раздел'}</button>
+ ${edit.type==='estimate'?'<button class="btn secondary" onclick="cancelEdit()">Отмена</button>':''}
+ </div>
+ <div class="muted small" style="margin-top:12px">
+ Плановые затраты не входят в стоимость для заказчика.
+ Они используются для расчёта плановой прибыли.
+ </div>`;
 }
 
-function addEstimate(){
-let x={
-section:el('section').value,
-work:num('work'),
-material:num('material'),
-transport:num('transport'),
-planWork:num('planWork'),
-planMaterial:num('planMaterial'),
-planOther:num('planOther')
-};
-if(!revenue(x)&&!planned(x))return alert('Укажи суммы');
-data.estimate.push(x);
-save();
-['work','material','transport','planWork','planMaterial','planOther']
-.forEach(id=>el(id).value='');
+function saveEstimate(){
+ let o=object();
+ let section=get('eSection');
+
+ if(edit.type!=='estimate'&&o.estimate.some(x=>x.section===section)){
+  alert('Этот раздел уже есть в смете. Используйте кнопку «Изменить».');
+  return;
+ }
+ if(edit.type==='estimate'&&o.estimate.some(x=>x.section===section&&x.id!==edit.id)){
+  alert('Раздел с таким названием уже существует.');
+  return;
+ }
+
+ let x={
+  id:edit.type==='estimate'?edit.id:id(),
+  section,
+  work:value('eWork'),
+  material:value('eMaterial'),
+  transport:value('eTransport'),
+  planWork:value('ePlanWork'),
+  planMaterial:value('ePlanMaterial')
+ };
+
+ if(!lineRevenue(x)&&!linePlan(x)){
+  alert('Укажите хотя бы одну сумму.');
+  return;
+ }
+
+ if(edit.type==='estimate'){
+  let i=o.estimate.findIndex(r=>r.id===edit.id);
+  if(i<0)return;
+  o.estimate[i]=x;
+ }else{
+  o.estimate.push(x);
+ }
+
+ persist();
+ cancelEdit();
 }
 
-function addOperation(type){
-let amount=num(type+'Amount');
-if(amount<=0)return alert('Укажи сумму больше нуля');
-let x={
-date:el(type+'Date').value,
-amount,
-note:el(type+'Note').value
-};
-if(!x.date)return alert('Укажи дату');
-if(type==='expense'){
-x.category=el('expenseCategory').value;
-x.section=el('expenseSection').value;
-}
-data[type].push(x);
-save();
-el(type+'Amount').value='';
-el(type+'Note').value='';
+function renderExtras(o){
+ let x=currentRow(o,'extras');
+ let c=calc(o);
+
+ return `
+ <div class="section-head">
+ <h2>Дополнительные работы</h2>
+ <b>${fmt(c.extras)}</b>
+ </div>
+ <div class="muted small" style="margin-bottom:14px">
+ Вносим только согласованные с заказчиком дополнительные работы.
+ </div>
+ <div class="tablewrap"><table>
+ <thead><tr>
+ <th>Название</th>
+ <th>Раздел</th>
+ <th class="num">Работы</th>
+ <th class="num">Материалы</th>
+ <th class="num">Всего</th>
+ <th>Действия</th>
+ </tr></thead>
+ <tbody>
+ ${o.extras.map(r=>`<tr>
+ <td>${safe(r.name)}</td>
+ <td>${safe(r.section)}</td>
+ <td class="num">${fmt(r.work)}</td>
+ <td class="num">${fmt(r.material)}</td>
+ <td class="num"><b>${fmt(lineRevenue(r))}</b></td>
+ <td>${buttons('extras',r.id)}</td>
+ </tr>`).join('')||'<tr><td colspan="6" class="empty">Дополнительных работ пока нет</td></tr>'}
+ </tbody>
+ <tfoot><tr>
+ <td>ИТОГО</td><td></td>
+ <td class="num">${fmt(sum(o.extras,r=>n(r.work)))}</td>
+ <td class="num">${fmt(sum(o.extras,r=>n(r.material)))}</td>
+ <td class="num">${fmt(c.extras)}</td><td></td>
+ </tr></tfoot>
+ </table></div>
+
+ <hr class="line">
+ <h3 id="entryForm">${edit.type==='extras'?'Редактировать допработу':'Добавить допработу'}</h3>
+ <div class="formgrid">
+ ${field('Название дополнительной работы','xName',x.name||'')}
+ ${selectField('Инженерный раздел','xSection',sections,x.section||sections[0])}
+ ${field('Работы для заказчика, ₽','xWork',x.work||'','number')}
+ ${field('Материалы для заказчика, ₽','xMaterial',x.material||'','number')}
+ ${field('Плановые затраты на работы, ₽','xPlanWork',x.planWork||'','number')}
+ ${field('Плановые затраты на материалы, ₽','xPlanMaterial',x.planMaterial||'','number')}
+ </div>
+ <div class="row" style="margin-top:16px">
+ <button class="btn" onclick="saveExtra()">${edit.type==='extras'?'Сохранить изменения':'Добавить допработу'}</button>
+ ${edit.type==='extras'?'<button class="btn secondary" onclick="cancelEdit()">Отмена</button>':''}
+ </div>`;
 }
 
-function removeItem(type,index){
-if(!confirm('Удалить запись?'))return;
-data[type].splice(index,1);
-save();
+function saveExtra(){
+ let o=object();
+ let name=get('xName').trim();
+
+ if(!name){alert('Введите название дополнительной работы.');return}
+
+ let x={
+  id:edit.type==='extras'?edit.id:id(),
+  name,
+  section:get('xSection'),
+  work:value('xWork'),
+  material:value('xMaterial'),
+  transport:0,
+  planWork:value('xPlanWork'),
+  planMaterial:value('xPlanMaterial')
+ };
+
+ if(edit.type==='extras'){
+  let i=o.extras.findIndex(r=>r.id===edit.id);
+  if(i<0)return;
+  o.extras[i]=x;
+ }else{
+  o.extras.push(x);
+ }
+ persist();
+ cancelEdit();
+}
+
+function renderOperations(o,type){
+ let income=type==='income';
+ let x=currentRow(o,type);
+ let rows=o[type];
+ let total=sum(rows,r=>n(r.amount));
+
+ return `
+ <div class="section-head">
+ <h2>${income?'Поступления от заказчика':'Расходы по объекту'}</h2>
+ <b>${fmt(total)}</b>
+ </div>
+ <div class="tablewrap"><table>
+ <thead><tr>
+ <th>Дата</th>
+ <th class="num">Сумма</th>
+ ${income?'':'<th>Категория</th>'}
+ <th>Комментарий</th>
+ <th>Действия</th>
+ </tr></thead>
+ <tbody>
+ ${rows.map(r=>`<tr>
+ <td>${safe(r.date)}</td>
+ <td class="num"><b>${fmt(r.amount)}</b></td>
+ ${income?'':`<td>${safe(r.category)}</td>`}
+ <td>${safe(r.note)}</td>
+ <td>${buttons(type,r.id)}</td>
+ </tr>`).join('')||`<tr><td colspan="${income?4:5}" class="empty">Записей пока нет</td></tr>`}
+ </tbody>
+ <tfoot><tr>
+ <td>ИТОГО</td>
+ <td class="num">${fmt(total)}</td>
+ ${income?'':'<td></td>'}
+ <td></td><td></td>
+ </tr></tfoot>
+ </table></div>
+
+ <hr class="line">
+ <h3 id="entryForm">${edit.type===type?'Редактировать запись':income?'Добавить поступление':'Добавить расход'}</h3>
+ <div class="formgrid">
+ ${field('Дата','opDate',x.date||iso(),'date')}
+ ${field('Сумма, ₽','opAmount',x.amount||'','number')}
+ ${income?'':selectField('Категория расхода','opCategory',categories,x.category||categories[0])}
+ ${field('Комментарий','opNote',x.note||'')}
+ </div>
+ <div class="row" style="margin-top:16px">
+ <button class="btn" onclick="saveOperation('${type}')">${edit.type===type?'Сохранить изменения':'Добавить запись'}</button>
+ ${edit.type===type?'<button class="btn secondary" onclick="cancelEdit()">Отмена</button>':''}
+ </div>`;
+}
+
+function saveOperation(type){
+ let o=object();
+ let amount=value('opAmount');
+
+ if(amount<=0){alert('Укажите сумму больше нуля.');return}
+ if(!get('opDate')){alert('Укажите дату.');return}
+
+ let x={
+  id:edit.type===type?edit.id:id(),
+  date:get('opDate'),
+  amount,
+  note:get('opNote').trim()
+ };
+
+ if(type==='expense'){
+  x.category=get('opCategory');
+  x.section='';
+ }
+
+ if(edit.type===type){
+  let i=o[type].findIndex(r=>r.id===edit.id);
+  if(i<0)return;
+  o[type][i]=x;
+ }else{
+  o[type].push(x);
+ }
+
+ persist();
+ cancelEdit();
+}
+
+function renderSettings(o,c){
+ return `
+ <div class="section-head">
+ <h2>Настройки объекта</h2>
+ </div>
+
+ ${objectFields(o)}
+
+ <hr class="line">
+ <h3>Плановые расходы</h3>
+ <div class="formgrid">
+ ${field('Общие плановые транспортные и накладные затраты, ₽','planOverhead',o.planOverhead||'','number')}
+ </div>
+
+ <hr class="line">
+ <h3>Комиссия партнёру</h3>
+ <div class="formgrid">
+ <div class="field">
+ <label>Способ расчёта</label>
+ <select id="commissionType">
+ ${[
+ ['none','Без комиссии'],
+ ['works','Процент от работ'],
+ ['materials','Процент от материалов'],
+ ['all','Процент от всей стоимости'],
+ ['fixed','Фиксированная сумма']
+ ].map(([v,l])=>`<option value="${v}" ${o.commissionType===v?'selected':''}>${l}</option>`).join('')}
+ </select>
+ </div>
+ ${field('Процент или фиксированная сумма','commissionValue',o.commissionValue||'','number')}
+ </div>
+ <div class="muted small" style="margin-top:10px">
+ Рассчитанная комиссия: <b>${fmt(c.fee)}</b>.
+ Уже оплачено по категории «Комиссия партнёру»: ${fmt(c.feePaid)}.
+ </div>
+
+ <hr class="line">
+ <h3>Информация</h3>
+ <div class="formgrid">
+ <div class="kpi"><span>Длительность объекта</span><strong>${days(o)}</strong></div>
+ <div class="kpi"><span>Плановые затраты с общими расходами</span><strong>${fmt(c.plan)}</strong></div>
+ <div class="kpi"><span>Плановая прибыль</span><strong>${fmt(c.plannedProfit)}</strong></div>
+ <div class="kpi"><span>Комиссия партнёру</span><strong>${fmt(c.fee)}</strong></div>
+ </div>
+
+ <div class="row" style="margin-top:18px">
+ <button class="btn" onclick="saveSettings()">Сохранить настройки</button>
+ </div>
+
+ <hr class="line">
+ <div class="notice">
+ При переводе объекта в статус «Завершён» он исчезнет из списка действующих,
+ но останется доступным для просмотра и редактирования.
+ </div>
+ <div style="margin-top:18px">
+ <button class="btn danger" onclick="deleteObject()">Удалить объект полностью</button>
+ </div>`;
+}
+
+function deleteObject(){
+ let o=object();
+ if(!o)return;
+ if(!confirm('Удалить объект «'+o.name+'» вместе со всеми финансовыми данными?'))return;
+ if(!confirm('Подтвердите окончательное удаление объекта.'))return;
+
+ state.objects=state.objects.filter(x=>x.id!==o.id);
+ selected=null;
+ persist();
+ nav('home');
+}
+
+function downloadJson(){
+ let json=JSON.stringify({
+  ...state,
+  exportedAt:new Date().toISOString()
+ },null,2);
+
+ let blob=new Blob([json],{type:'application/json;charset=utf-8'});
+ let url=URL.createObjectURL(blob);
+ let a=document.createElement('a');
+ a.href=url;
+ a.download='ideal-klimat-backup-'+iso()+'.json';
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function importJson(event){
+ let file=event.target.files?.[0];
+ if(!file)return;
+
+ let reader=new FileReader();
+
+ reader.onload=()=>{
+  try{
+   let incoming=JSON.parse(reader.result);
+
+   if(!incoming||!Array.isArray(incoming.objects)){
+    throw Error('Неверный формат резервной копии.');
+   }
+
+   if(!incoming.objects.every(o=>
+    o&&typeof o==='object'&&
+    Array.isArray(o.estimate)&&
+    Array.isArray(o.extras)&&
+    Array.isArray(o.income)&&
+    Array.isArray(o.expense)
+   )){
+    throw Error('В файле есть некорректные объекты.');
+   }
+
+   if(!confirm(
+    'Импорт заменит ВСЕ текущие объекты данными из файла. Продолжить?'
+   ))return;
+
+   let restored={
+    version:2,
+    objects:incoming.objects.map(normalize)
+   };
+
+   let previous=state;
+   state=restored;
+
+   if(!persist()){
+    state=previous;
+    return;
+   }
+
+   selected=null;
+   filter='active';
+   nav('home');
+   alert('Резервная копия восстановлена.');
+  }catch(e){
+   alert('Не удалось импортировать файл: '+e.message);
+  }
+ };
+
+ reader.onerror=()=>alert('Ошибка чтения файла.');
+ reader.readAsText(file);
+ event.target.value='';
+}
+
+function showBackups(){
+ view='backups';
+ render();
+}
+
+function renderBackups(){
+ return `
+ <div class="row between">
+ <h1 class="title">Резервное копирование</h1>
+ <button class="btn secondary" onclick="nav('home')">← К объектам</button>
+ </div>
+
+ <section class="panel">
+ <h2>Сохранить данные</h2>
+ <p class="muted">
+ Все объекты, сметы, допы, поступления и расходы
+ сохраняются в один файл JSON.
+ </p>
+ <button class="btn" onclick="downloadJson()">Скачать резервную копию</button>
+
+ <hr class="line">
+
+ <h2>Восстановить данные</h2>
+ <p class="muted">
+ Выберите ранее сохранённую резервную копию.
+ Восстановление полностью заменит текущие данные.
+ </p>
+ <input type="file" accept=".json,application/json" onchange="importJson(event)">
+
+ <div class="notice" style="margin-top:18px">
+ Перед восстановлением рекомендуем сначала сохранить текущую резервную копию.
+ </div>
+ </section>`;
 }
 
 function render(){
-let total=sum(data.estimate,revenue);
-let plan=sum(data.estimate,planned);
-let incoming=sum(data.income,x=>Number(x.amount)||0);
-let outgoing=sum(data.expense,x=>Number(x.amount)||0);
-let fee=commission();
-let paidFee=sum(data.expense,x=>x.category==='Комиссия партнёру'?Number(x.amount)||0:0);
-let plannedProfit=total-plan-fee;
+ let app=$('app');
+ if(!app)return;
 
-let metrics=[
-['Сумма сметы',money(total)],
-['Поступило',money(incoming)],
-['Потрачено',money(outgoing)],
-['Остаток в кассе',money(incoming-outgoing)],
-['Плановая прибыль',money(plannedProfit)],
-['Остаток комиссии',money(Math.max(0,fee-paidFee))]
-];
-
-el('metrics').innerHTML=metrics.map(x=>
-'<div class="metric"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>'
-).join('');
-
-el('name').value=data.name;
-el('partner').value=data.partner;
-el('progressInput').value=data.progress;
-el('bar').style.width=data.progress+'%';
-el('commissionType').value=data.commissionType;
-el('commissionValue').value=data.commissionValue;
-el('commissionTotal').textContent=money(fee);
-
-el('estimateRows').innerHTML=data.estimate.map((x,i)=>
-'<tr>'+
-'<td>'+escapeHtml(x.section)+'</td>'+
-'<td class="right">'+money(x.work)+'</td>'+
-'<td class="right">'+money(x.material)+'</td>'+
-'<td class="right">'+money(x.transport)+'</td>'+
-'<td class="right"><strong>'+money(revenue(x))+'</strong></td>'+
-'<td class="right">'+money(planned(x))+'</td>'+
-'<td><button class="danger" onclick="removeItem(\'estimate\','+i+')">×</button></td>'+
-'</tr>'
-).join('');
-
-el('estimateTotals').innerHTML=
-'<tr>'+
-'<td>ИТОГО</td>'+
-'<td class="right">'+money(sum(data.estimate,x=>Number(x.work)||0))+'</td>'+
-'<td class="right">'+money(sum(data.estimate,x=>Number(x.material)||0))+'</td>'+
-'<td class="right">'+money(sum(data.estimate,x=>Number(x.transport)||0))+'</td>'+
-'<td class="right">'+money(total)+'</td>'+
-'<td class="right">'+money(plan)+'</td>'+
-'<td></td>'+
-'</tr>';
-
-el('incomeRows').innerHTML=data.income.map((x,i)=>
-'<tr><td>'+escapeHtml(x.date)+'</td>'+
-'<td>'+escapeHtml(x.note)+'</td>'+
-'<td class="right">'+money(x.amount)+'</td>'+
-'<td><button class="danger" onclick="removeItem(\'income\','+i+')">×</button></td></tr>'
-).join('');
-
-el('expenseRows').innerHTML=data.expense.map((x,i)=>
-'<tr><td>'+escapeHtml(x.date)+'</td>'+
-'<td>'+escapeHtml(x.category)+'</td>'+
-'<td>'+escapeHtml(x.section)+'</td>'+
-'<td>'+escapeHtml(x.note)+'</td>'+
-'<td class="right">'+money(x.amount)+'</td>'+
-'<td><button class="danger" onclick="removeItem(\'expense\','+i+')">×</button></td></tr>'
-).join('');
+ if(view==='home'){
+  app.innerHTML=renderHome();
+ }else if(view==='create'){
+  app.innerHTML=renderCreate();
+ }else if(view==='detail'){
+  app.innerHTML=renderDetail();
+ }else if(view==='backups'){
+  app.innerHTML=renderBackups();
+ }else{
+  view='home';
+  app.innerHTML=renderHome();
+ }
 }
 
-el('name').onchange=e=>{data.name=e.target.value;save()};
-el('partner').onchange=e=>{data.partner=e.target.value;save()};
-el('progressInput').onchange=e=>{
-data.progress=Math.max(0,Math.min(100,Number(e.target.value)||0));
-save();
-};
-el('commissionType').onchange=e=>{
-data.commissionType=e.target.value;save();
-};
-el('commissionValue').onchange=e=>{
-data.commissionValue=Number(e.target.value)||0;save();
-};
-
-function exportData(){
-let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-let url=URL.createObjectURL(blob);
-let a=document.createElement('a');
-a.href=url;
-a.download='ideal-klimat-backup.json';
-a.click();
-setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function importData(event){
-let file=event.target.files[0];
-if(!file)return;
-let reader=new FileReader();
-reader.onload=()=>{
-try{
-let d=JSON.parse(reader.result);
-if(!Array.isArray(d.estimate)||
-!Array.isArray(d.income)||
-!Array.isArray(d.expense))throw Error();
-if(confirm('Заменить текущие данные резервной копией?')){
-data=d;save();
-}
-}catch(e){alert('Некорректный файл')}
-};
-reader.readAsText(file);
-}
-
-let today=new Date().toLocaleDateString('en-CA');
-el('incomeDate').value=today;
-el('expenseDate').value=today;
 render();
+
 </script>
 </body>
 </html>
